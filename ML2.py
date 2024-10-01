@@ -10,6 +10,7 @@ from torchvision.io import read_image, decode_image#, transforms
 import torchvision.transforms as transforms
 from itertools import chain
 import tqdm
+torch.manual_seed(1)
 
 if torch.cuda.is_available():
     device = torch.device('cuda:1')
@@ -227,41 +228,6 @@ class ThaiOCRData(Dataset):
             #print(img[0])
             #print(img)
             #break'''
-
-#thai = ThaiOCRData('thai')
-#counter = 1
-'''print(len(thai))
-for item in thai:
-    print(item)
-    print(counter)
-    counter +=1'''
-#print(thai[2])
-#gen= os.walk("/scratch/lt2326-2926-h24/ThaiOCR/ThaiOCR-TrainigSet/")
-
-#print(train_dataset.data_dict, test_dataset.data_dict, val_dataset.data_dict)
-
-
-#        self.data_dict = data_dict
-#        self.dataset = parent_dir
-#        self.indices = indices
-#count = 0
-#print(len(train.data_dict))
-#print(len(train), len(test), len(val))
-
-#thai = ThaiOCRData("/scratch/lt2326-2926-h24/ThaiOCR/ThaiOCR-TrainigSet/")1
-#d = {"s": 2, "t":3}
-#train, test_valid = train_test_split(d, train_size=0.8, random_state=1, shuffle=True)
-#print(thai.data_dict)
-#print()
-#print(thai.lang_dir)
-#print()
-#print(thai.indices)
-#print(gen(next))
-
-
-
-
-
 
 class ThaiOCRModel(nn.Module):
     def __init__(self, num_classes):
