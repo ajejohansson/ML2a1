@@ -16,7 +16,7 @@ import tqdm
 import pickle
 
 if torch.cuda.is_available():
-    device = torch.device('cuda:1')
+    device = torch.device('cuda:3')
 else:
     device = torch.device('cpu')
 
@@ -104,6 +104,8 @@ class ThaiOCRData(Dataset):
         #    walking = tuple(os.walk(parent_dir + '/' + 'Thai')) + tuple(os.walk(parent_dir + '/' + 'English'))
         #    print('Generating data splits for combined Thai + English...')
         #    print("If a single subset is sought, run with 'Thai', 'English', 'Special', or 'Numeric' as arg 1.")
+        
+        #self.transform = transforms.Compose([transforms.PILToTensor()])
         data_dict = {}
         indices = []
         #classes = set()
@@ -114,8 +116,10 @@ class ThaiOCRData(Dataset):
         #    pics = item[2]
         #    for pic in pics:
         for pic, label, dpi, typeface, parent_path in subset:
-            #if pic.endswith('.bmp'):    
-            data_dict[pic] = {'label': label, 'dpi': dpi, 'typeface': typeface, 'fullpath': os.path.join(parent_path, pic)}
+            #pil_image = Image.open(os.path.join(parent_path, pic))
+            #img_tensor = transform(pil_image).to(self.device) # read_image(pil_image)
+            data_dict[pic] = {'label': torch.as_tensor(int(label)), 'dpi': dpi, 'typeface': typeface, 'fullpath': os.path.join(parent_path, pic)}
+            #data_dict[pic] = {'label': label, 'dpi': dpi, 'typeface': typeface, 'tensor': img_tensor}
             indices.append(pic)
         #        classes.add(label)
 
@@ -124,25 +128,35 @@ class ThaiOCRData(Dataset):
         #self.subdir = subdir
         self.indices = indices
         self.classes = classes
+        self.transform = transforms.Compose([
+            transforms.PILToTensor(),
+            transforms.ConvertImageDtype(torch.float),
+            transforms.Resize((72, 48))
+            ])
+        self.device = device
 
         #from https://www.geeksforgeeks.org/converting-an-image-to-a-torch-tensor-in-python/
         #read/decode_image from pytorch does not seem to handle bmp images
-        self.transform = transforms.Compose([transforms.PILToTensor()])
-        self.device = device
+    
 
     def __len__(self):
         return len(self.data_dict)
 
     def __getitem__(self, idx):
         img_name = self.indices[idx]
+        
+        #label = torch.as_tensor(self.data_dict[img_name]['label'])
         label = self.data_dict[img_name]['label']
-        dpi =  self.data_dict[img_name]['dpi']
-        typeface = self.data_dict[img_name]['typeface']
+        #dpi =  self.data_dict[img_name]['dpi']
+        #typeface = self.data_dict[img_name]['typeface']
         pil_image = Image.open(self.data_dict[img_name]['fullpath'])
         #image = read_image(self.data_dict[img_name]['fullpath'])
-        img_tensor = self.transform(pil_image).to(self.device) # read_image(pil_image)
 
-        return img_name, label, dpi, typeface, img_tensor     
+        img_tensor = self.transform(pil_image).to(self.device) # read_image(pil_image)
+        #img_tensor = self.data_dict['tensor']
+
+        #return img_name, label, dpi, typeface, img_tensor
+        return img_tensor, label
     
     
 
@@ -156,5 +170,3 @@ if __name__ == "__main__":
     with open('train_dataset.pkl', 'wb') as f:
         pickle.dump(trainset, f)
         
-    with open('train_dataset.pkl', 'rb') as f:
-        loaded_train = pickle.load(f)
