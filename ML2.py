@@ -13,7 +13,7 @@ import tqdm
 torch.manual_seed(1)
 
 if torch.cuda.is_available():
-    device = torch.device('cuda:1')
+    device = torch.device('cuda:3')
 else:
     device = torch.device('cpu')
 

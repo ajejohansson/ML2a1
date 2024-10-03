@@ -52,6 +52,10 @@ def generate_split(parent_dir):
                     data_list.append((pic, label, dpi, typeface, parent_path))
                     classes.add(label)
         data_subsets.append(data_list)
+    
+    for subset in data_subsets:
+        print('hi')
+        print(len(subset))
 
     subset_splits = []
     # splits each data subset (e.g. 'Thai', 'English') into separate train, test, val sets, which are then concatenated
@@ -62,19 +66,23 @@ def generate_split(parent_dir):
         train, test_val = train_test_split(subset, train_size=0.8, random_state=1, shuffle=True)
         test, val = train_test_split(test_val, train_size=0.5, random_state=1, shuffle=True)
         subset_splits.append([train, test, val])
+    print(len(subset_splits[0][2]))
 
     train, test, val = [list(chain(*split)) for split in zip(*subset_splits)]
+    print(len(train))
+    print(len(test))
+    print(len(val))
     return train, test, val, classes
 
 
 
-def generate_datafiles(train, test, val, classes):
-    current_directory = os.getcwd()
-    datadir = os.path.join(current_directory, 'data')
-    if not os.path.exists(datadir):
-        os.makedirs(datadir)
+#def generate_datafiles(train, test, val, classes):
+    #current_directory = os.getcwd()
+    #datadir = os.path.join(current_directory, 'data')
+    #if not os.path.exists(datadir):
+    #    os.makedirs(datadir)
     
-    print(type(train))
+    #print(type(train))
     #def write_subset(subset, subset_name):
     #    with open(os.path.join(datadir, subset_name), 'w') as f:
     #        f.writelines(subset)
@@ -106,6 +114,7 @@ class ThaiOCRData(Dataset):
         #    print("If a single subset is sought, run with 'Thai', 'English', 'Special', or 'Numeric' as arg 1.")
         
         #self.transform = transforms.Compose([transforms.PILToTensor()])
+    
         data_dict = {}
         indices = []
         #classes = set()
@@ -118,7 +127,7 @@ class ThaiOCRData(Dataset):
         for pic, label, dpi, typeface, parent_path in subset:
             #pil_image = Image.open(os.path.join(parent_path, pic))
             #img_tensor = transform(pil_image).to(self.device) # read_image(pil_image)
-            data_dict[pic] = {'label': torch.as_tensor(int(label)), 'dpi': dpi, 'typeface': typeface, 'fullpath': os.path.join(parent_path, pic)}
+            data_dict[pic] = {'label': label, 'dpi': dpi, 'typeface': typeface, 'fullpath': os.path.join(parent_path, pic)}
             #data_dict[pic] = {'label': label, 'dpi': dpi, 'typeface': typeface, 'tensor': img_tensor}
             indices.append(pic)
         #        classes.add(label)
@@ -127,7 +136,8 @@ class ThaiOCRData(Dataset):
         self.data_dict = data_dict
         #self.subdir = subdir
         self.indices = indices
-        self.classes = classes
+        self.classes = list(classes)
+        self.class_to_idx = {c: idx for idx, c in enumerate(self.classes)}
         self.transform = transforms.Compose([
             transforms.PILToTensor(),
             transforms.ConvertImageDtype(torch.float),
@@ -144,9 +154,15 @@ class ThaiOCRData(Dataset):
 
     def __getitem__(self, idx):
         img_name = self.indices[idx]
+
+        label_str = self.data_dict[img_name]['label']
+        label = torch.as_tensor(self.class_to_idx[label_str])
+
+
+        #torch.as_tensor(int(label))
         
         #label = torch.as_tensor(self.data_dict[img_name]['label'])
-        label = self.data_dict[img_name]['label']
+        #label = self.data_dict[img_name]['label']
         #dpi =  self.data_dict[img_name]['dpi']
         #typeface = self.data_dict[img_name]['typeface']
         pil_image = Image.open(self.data_dict[img_name]['fullpath'])
@@ -157,6 +173,9 @@ class ThaiOCRData(Dataset):
 
         #return img_name, label, dpi, typeface, img_tensor
         return img_tensor, label
+        #return label_str, label
+
+
     
     
 
@@ -166,7 +185,18 @@ if __name__ == "__main__":
     traindata, testdata, valdata, classes = generate_split(training_dir)
     #generate_datafiles(train, test, val, classes)
     trainset = ThaiOCRData(traindata, classes)
+    testset = ThaiOCRData(testdata, classes)
+    valset = ThaiOCRData(valdata, classes)
     #print(trainset[0])
+    print(len(trainset))
+    print(len(testset))
+    print(len(valset))
     with open('train_dataset.pkl', 'wb') as f:
         pickle.dump(trainset, f)
+    with open('test_dataset.pkl', 'wb') as f:
+        pickle.dump(testset, f)
+    with open('val_dataset.pkl', 'wb') as f:
+        pickle.dump(valset, f)
+    
+    #python test.py
         

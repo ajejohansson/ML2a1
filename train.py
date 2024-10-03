@@ -59,17 +59,18 @@ def train(filename='trained_model.pt', epochs=2, device='cpu'):
 
             #img_name, label, dpi, typeface, img_tensor = batch
             img_tensor, label = batch
-            print(label)
-            print(print(img_tensor[0].dtype))
+            #print(label)
+            #print(print(img_tensor[0].dtype))
             #X, y = batch
             label = label.to(device)
-            print('passed')
+            #print('passed')
             optimizer.zero_grad()
             out = model(img_tensor)
+            #print(label)
             loss = criterion(out, label)
             loss.backward()
             optimizer.step()
-            print('passed batch')
+            #print('passed batch')
         
 
     print(loader)
