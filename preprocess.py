@@ -14,6 +14,7 @@ import torchvision.transforms as transforms
 from itertools import chain
 import tqdm
 import pickle
+import json
 
 if torch.cuda.is_available():
     device = torch.device('cuda:3')
@@ -23,14 +24,59 @@ else:
 training_dir = os.path.abspath("/scratch/lt2326-2926-h24/ThaiOCR/ThaiOCR-TrainigSet")
 #not only the training dir for our purposes, but close enough
 
+
+{
+    "train": {
+        "lang": "Thai",
+        "dpi": "200",
+        "typeface": "normal"
+    },
+    "eval": {
+        "lang": "English",
+        "dpi": "300",
+        "typeface": "normal"
+    }
+}
+
+with open("config.json", "r") as f:
+    config = json.load(f)
+
+all_dpi = ['200', '300', '400']
+all_tf = ['normal', 'bold']
+config_dict = {'train': {'dpi': '200', 'typeface': 'normal'}, 'eval': {'dpi': '200', 'typeface': 'normal'}}
+print(len(sys.argv))
 def generate_split(parent_dir):
-    if sys.argv[1].lower() in [dirname.lower() for dirname in os.listdir(parent_dir)]:
-        walk_tup = (os.walk(parent_dir + '/' + sys.argv[1].title()),)
-        print('Generating data splits for ' + sys.argv[1].title()+'...')
+    if config['train'] == config['eval']:
+        disjoint = False
+
+
+
+
+    # if the script is called with an argument, the config file does not matter, and the argument should either
+    #   specify language/subset ('thai', 'english', 'special', 'numeric' etc., case insensitive), or
+    #   be literally anything (or 'both' to be semantically appropriate if syntactically unnecessary),
+    #   in which case the script will use Thai and English
+    if len(sys.argv > 1):
+        disjoint = False
+        if sys.argv[1].lower() in [dirname.lower() for dirname in os.listdir(parent_dir)]:
+            walk_tup = (os.walk(parent_dir + '/' + sys.argv[1].title()),)
+            print('Generating data splits for ' + sys.argv[1].title()+'...')
+        else:
+            walk_tup = (tuple(os.walk(parent_dir + '/' + 'Thai')), tuple(os.walk(parent_dir + '/' + 'English')))
+            print('Generating data splits for combined Thai + English...')
+            print("If a single subset is sought, run with 'Thai', 'English', 'Special', or 'Numeric' as arg 1.")
     else:
-        walk_tup = (tuple(os.walk(parent_dir + '/' + 'Thai')), tuple(os.walk(parent_dir + '/' + 'English')))
-        print('Generating data splits for combined Thai + English...')
-        print("If a single subset is sought, run with 'Thai', 'English', 'Special', or 'Numeric' as arg 1.")
+        print('Generating datasets per configuration file...')
+        if config['train'] == config['eval']:
+            disjoint = False
+        if (config['train']['lang'] in [dirname.lower() for dirname in os.listdir(parent_dir)] 
+        and config['train']['lang'] == config['eval']['lang']):
+            walk_tup = (os.walk(parent_dir + '/' + config['train']['lang'].title()),)
+        else:
+            walk_tup = (tuple(os.walk(parent_dir + '/' + 'Thai')), tuple(os.walk(parent_dir + '/' + 'English')))
+        
+    
+    
 
     data_subsets = []
     #getting classes pre-split to make train/test not have a different number of them
@@ -52,10 +98,7 @@ def generate_split(parent_dir):
                     data_list.append((pic, label, dpi, typeface, parent_path))
                     classes.add(label)
         data_subsets.append(data_list)
-    
-    for subset in data_subsets:
-        print('hi')
-        print(len(subset))
+
 
     subset_splits = []
     # splits each data subset (e.g. 'Thai', 'English') into separate train, test, val sets, which are then concatenated
@@ -66,12 +109,9 @@ def generate_split(parent_dir):
         train, test_val = train_test_split(subset, train_size=0.8, random_state=1, shuffle=True)
         test, val = train_test_split(test_val, train_size=0.5, random_state=1, shuffle=True)
         subset_splits.append([train, test, val])
-    print(len(subset_splits[0][2]))
 
     train, test, val = [list(chain(*split)) for split in zip(*subset_splits)]
-    print(len(train))
-    print(len(test))
-    print(len(val))
+
     return train, test, val, classes
 
 
@@ -188,14 +228,12 @@ if __name__ == "__main__":
     testset = ThaiOCRData(testdata, classes)
     valset = ThaiOCRData(valdata, classes)
     #print(trainset[0])
-    print(len(trainset))
-    print(len(testset))
-    print(len(valset))
-    with open('train_dataset.pkl', 'wb') as f:
+
+    with open('train_dataset2.pkl', 'wb') as f:
         pickle.dump(trainset, f)
-    with open('test_dataset.pkl', 'wb') as f:
+    with open('test_dataset2.pkl', 'wb') as f:
         pickle.dump(testset, f)
-    with open('val_dataset.pkl', 'wb') as f:
+    with open('val_dataset2.pkl', 'wb') as f:
         pickle.dump(valset, f)
     
     #python test.py

@@ -24,9 +24,9 @@ class ThaiOCRModel(nn.Module):
         super().__init__()
         self.conv2d = nn.Conv2d(1, 1, (5,5), padding=2)
         self.flatten = nn.Flatten()
-        self.linear1 = nn.Linear(1*72*48, 10)
+        self.linear1 = nn.Linear(1*72*48, 300)
         self.tanh = nn.Tanh()
-        self.linear2 = nn.Linear(10, num_classes)
+        self.linear2 = nn.Linear(300, num_classes)
         self.log_softmax = nn.LogSoftmax(dim=1)
     
     def forward(self, image):
@@ -37,13 +37,13 @@ class ThaiOCRModel(nn.Module):
         out = self.linear2(out)
         return self.log_softmax(out)
 
-def train(filename='trained_model.pt', epochs=2, device='cpu'):
+def train(filename='trained_model.pt', epochs=8, device='cpu'):
     with open('train_dataset.pkl', 'rb') as f:
         loaded_train = pickle.load(f)
     classes = loaded_train.classes
     loader = DataLoader(loaded_train, batch_size=32, shuffle=True)
     model = ThaiOCRModel(len(classes)).to(device)
-    optimizer = Adam(model.parameters(), lr=0.1)
+    optimizer = Adam(model.parameters(), lr=0.01)
     criterion = nn.NLLLoss().to(device)
     
 

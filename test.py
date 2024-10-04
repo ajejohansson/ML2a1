@@ -76,13 +76,23 @@ def test(device='cpu', eval_set='val'):
         
     for batch_id, batch in enumerate(tqdm.tqdm(loader)):
         img_tensor, label = batch
-        gold_label = label.to('cpu')
-        pred = model(img_tensor)
+        gold_label = label#.to('cpu')
+        pred = model(img_tensor).to('cpu')
 
-        #could also append gold_label/pred[0], but extend makes it robust to larger batch sizes than 1 
-        y_test.extend(gold_label)
-        y_pred.extend(pred)
+        #could also append gold_label/pred[0], but extend makes it robust to larger batch sizes than 1
+        # append label/pred[0] rather than extend label/pred means the code is not robust to batch sizes
+        # >1, but there isn't really a reason to go >1 for testing, and this is just simpler than 
+        # getting the argmax through a list comprehension or something.
+        y_test.append(gold_label[0])
+        y_pred.append(pred[0].argmax())
     
+    #print('Dumping...')
+    #with open('y.pkl', 'wb') as f:
+    #    pickle.dump((y_pred, y_test, classes), f)
+    print(y_pred[0], y_test[0])
+    print(len(y_pred), len(y_test))
+
+    print('Printing metrics...')
     print_metrics(y_pred, y_test, classes)
 
 
