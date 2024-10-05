@@ -37,7 +37,7 @@ class ThaiOCRModel(nn.Module):
         out = self.linear2(out)
         return self.log_softmax(out)
 
-def train(filename='trained_model.pt', epochs=8, device='cpu'):
+def train(filename='trained_model.pt', epochs=4, device='cpu'):
     with open('train_dataset.pkl', 'rb') as f:
         loaded_train = pickle.load(f)
     classes = loaded_train.classes
@@ -73,7 +73,7 @@ def train(filename='trained_model.pt', epochs=8, device='cpu'):
             #print('passed batch')
         
 
-    print(loader)
+    #print(loader)
     print(model)
 
     torch.save(model.state_dict(), filename)

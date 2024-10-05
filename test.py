@@ -15,14 +15,16 @@ import tqdm
 import pickle
 from preprocess import ThaiOCRData
 from train import ThaiOCRModel
+import builtins
+import json
 
 if torch.cuda.is_available():
     device = torch.device('cuda:3')
 else:
     device = torch.device('cpu')
 
-def print_metrics(y_pred, y_test, classes):
-    # Note: This function has more or less the same structure as one I have used in a previous assignment.
+def print_metrics(y_pred, y_test, classes, lang, model, filelog=False):
+    # Note: This function is modified from a previous assignment where we were also asked to give these metrics
     
     """
     Prints accuracy; precision, recall, f-score per class; and macro precision, recall, f-score based on inputs.
@@ -30,14 +32,43 @@ def print_metrics(y_pred, y_test, classes):
         y_pred: set of class predictions made by model
         y_test: set of gold labels of evaluation set where y_test[i] corresponds to y_pred[i]
     """
-    accuracy = accuracy_score(y_test, y_pred)
-    p_scores = precision_score(y_test, y_pred, labels = classes, average = None, zero_division=0.0)
-    r_scores = recall_score(y_test, y_pred, labels = classes, average = None, zero_division=0.0)
-    f_scores = f1_score(y_test, y_pred, labels = classes, average = None, zero_division=0.0)
-    macro_p = precision_score(y_test, y_pred, labels = classes, average = "macro", zero_division=0.0)
-    macro_r = recall_score(y_test, y_pred, labels = classes, average = "macro", zero_division=0.0)
-    macro_f = f1_score(y_test, y_pred, labels = classes, average = "macro", zero_division=0.0)
+    
+    
+    # from sethdandridge.com/blog/redefining-pythons-print-function
+    # This code snippet works to make all prints in the function write to a file instead of printing,
+    # so I can gather the results that I refer to. When print_metrics is called with filelog=True,
+    # the code runs well and creates/appends to the desired file.
+    # However, when filelog=False (and )
+    #if filelog:
+    #    def print(*args, **kwargs):
+    #        with open('results_log.txt', 'a+') as f:
+    #            return builtins.print(*args, file=f, **kwargs)
 
+    # from stackoverflow.com/questions/11124093/redirect-python-print-output-to-logger
+    if filelog:
+        log = open(os.getcwd()+'/results/results_log'+str(len(os.listdir('results'))+1)+'.txt', 'a')
+        sys.stdout = log
+
+    
+    accuracy = accuracy_score(y_test, y_pred)
+    p_scores = precision_score(y_test, y_pred, average = None, zero_division=0.0)
+    r_scores = recall_score(y_test, y_pred, average = None, zero_division=0.0)
+    f_scores = f1_score(y_test, y_pred, average = None, zero_division=0.0)
+    macro_p = precision_score(y_test, y_pred, average = "macro", zero_division=0.0)
+    macro_r = recall_score(y_test, y_pred, average = "macro", zero_division=0.0)
+    macro_f = f1_score(y_test, y_pred, average = "macro", zero_division=0.0)
+
+    if lang:
+        print('Results for ', lang)
+    else:
+        with open("config.json", "r") as f:
+            config = json.load(f)
+        print("Results with the following test/eval configuration:")
+        print(config)
+    print()
+    print("model params:")
+    print(model)
+    print()
     print("accuracy is", accuracy)
     print()
 
@@ -54,7 +85,10 @@ def print_metrics(y_pred, y_test, classes):
     for label, f_score in zip(classes, f_scores):
         print("f-score for label '{}' is {}".format(label, f_score))
     print("macro f-score is", macro_f)
-    
+    print()
+    print('------------------------------------------------')
+    if filelog:
+        log.close()
 
 def test(device='cpu', eval_set='val'):
     #with open('val_dataset.pkl', 'rb') as f:
@@ -62,6 +96,7 @@ def test(device='cpu', eval_set='val'):
         loaded_eval = pickle.load(f)
     
     classes = loaded_eval.classes
+    lang = loaded_eval.lang
     loader = DataLoader(loaded_eval, batch_size=1)
     model = ThaiOCRModel(len(classes)).to(device)
     model.load_state_dict(torch.load('trained_model.pt', weights_only=True))
@@ -89,23 +124,18 @@ def test(device='cpu', eval_set='val'):
     #print('Dumping...')
     #with open('y.pkl', 'wb') as f:
     #    pickle.dump((y_pred, y_test, classes), f)
-    print(y_pred[0], y_test[0])
-    print(len(y_pred), len(y_test))
+    #print(y_pred[0], y_test[0])
+    #print(len(y_pred), len(y_test))
 
-    print('Printing metrics...')
-    print_metrics(y_pred, y_test, classes)
+    #print('Printing metrics...')
 
-
-        
-
-
-
+    print_metrics(y_pred, y_test, classes, lang, model, filelog=True) #filelog=True
 
 
 
 #source ML-env/bin/activate
 if __name__ == "__main__":
-    test(device=device, eval_set='val')
+    test(device=device, eval_set='test')
     #trainset, testset, valset, classes = generate_split(training_dir)
 
     #classes = loaded_train.classes
