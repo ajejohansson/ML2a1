@@ -1,0 +1,12 @@
+{
+    "train": {
+        "lang": "Thai",
+        "dpi": ["200"],
+        "typeface": ["bold"]
+    },
+    "eval": {
+        "lang": "Thai",
+        "dpi": ["200"],
+        "typeface": ["normal"]
+    }
+}
