@@ -4,7 +4,9 @@ Andreas Johansson submission for LT2326, assignment 1
 Brief script procedure instructions:
 
 1 Run preprocess.py, arg 1: optional, specifying language-level subset -> generates pickled dataset splits (one pytorch Dataset subset per train/test/val)
+
 2 Run train.py without arguments -> trains on currently saved trainset, saves model
+
 3 Run test.py, arg1: mandatory, specifying eval set, arg 2: optional, for writing to file instead of printing -> evaluates currently saved model on currently saved dataset
 
 preprocess should not be run again between train and test. config.json should not be changed until after eval if preprocess was run without an argument (eval results will be correct but will be associated with the wrong settings)
