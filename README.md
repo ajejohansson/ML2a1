@@ -66,3 +66,11 @@ Interestingly, the 12-epoch counterpart (log12) does not have a single 0 across 
 
 Finally: not surprisingly, italic characters seem more adversarial. All configs being the same except the evaluation typeface being set to 'italic' results in 51% accuracy (log14). Running the same training setup but for 8 epochs (log15) reduces this to 36%, suggesting it certainly is not something to be solved with more training: it requires some more fundamental change to model architecture.
 (Note that this is speculation based on one training per epoch number, so not very empirically sound. But even so.)
+
+## Bonus
+
+I did not carry out the bonus since the rest of my submission was already late, but here are some thoughts/ideas.
+
+The test set is clearly very differently structured. We have two subsets (book/journal), each with an image directory and a text directory. Versions of the images exist in different dpis (200/300) and channels (black/white, grayscale). The text of each image is represented by a series of textfiles, which together make up the total image text. In order to have a classification task at all like the one in the training data, the characters in the images must be separated from the rest into its own image (model input) and tied to the corresponding textfile character (class). I played around with some preprocessing with os in bonus.ipynb, associating each image (in only the books subdirectory thus far) with the corresponding text files. From there I would have needed to find some way of separating the characters. First I thought I might look at the image tensor (or perhaps more likely an intermediate numpy array) for where whole columns are zeroes (new character) or whole rows are zeroes (new line), but I suspect the images might not be consistently aligned for this. Another option is to find helper libraries for, for example, bounding boxes around characters (which I assume does not count as just using an existing ocr model).
+
+Either way, the task seems interesting and would have been fun (and probably frustrating) if I had time.
