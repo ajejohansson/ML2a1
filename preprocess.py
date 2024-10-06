@@ -144,10 +144,14 @@ def generate_split(parent_dir):
 
 class ThaiOCRData(Dataset):
     def __init__(self, subset, classes, lang):
+
         '''
-        I input classes from the preprocess (as opposed to collecting them in-class) since
-        I want all data subsets to have all classes, even if a particular one does not occur
-        in a given subset.
+        Subclass of pytorch Dataset
+
+        args:
+            subset: dataset tuple with structure of outputs 0,1,2 of generate_split()
+            classes: set of classes from data
+            lang: string of language data is based on, or False boolean if language is received from config file
         '''
         data_dict = {}
         indices = []
@@ -185,13 +189,6 @@ class ThaiOCRData(Dataset):
 
         return img_tensor, label
 
-
-
-    
-    
-
-
-
 if __name__ == "__main__":
     if torch.cuda.is_available():
         device = torch.device('cuda:3')
@@ -210,4 +207,3 @@ if __name__ == "__main__":
         pickle.dump(testset, f)
     with open('val_dataset.pkl', 'wb') as f:
         pickle.dump(valset, f)
-

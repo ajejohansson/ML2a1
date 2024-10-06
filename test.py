@@ -1,21 +1,13 @@
 import os
 import sys
 import torch
-#import torch.nn as nn
-from torch.utils.data import DataLoader #Dataset,
-#from torch.optim import Adam
-#from PIL import Image
-#import pandas as pd
-#from sklearn.model_selection import train_test_split
+from torch.utils.data import DataLoader
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-#from torchvision.io import read_image, decode_image#, transforms
-#import torchvision.transforms as transforms
 from itertools import chain
 import tqdm
 import pickle
 from preprocess import ThaiOCRData
 from train import ThaiOCRModel
-#import builtins
 import json
 
 if torch.cuda.is_available():
@@ -100,14 +92,12 @@ def test(device='cpu', eval_set='val'):
     y_test = []
     y_pred = []
     model.eval()
- 
         
     for batch_id, batch in enumerate(tqdm.tqdm(loader)):
         img_tensor, label = batch
         gold_label = label#.to('cpu')
         pred = model(img_tensor).to('cpu')
 
-        
         # append label/pred[0] rather than extend label/pred means the code is not robust to batch sizes >1,
         # but there isn't really a reason to go >1 for testing, and this is just simpler than 
         # getting the argmax through a list comprehension or something.
