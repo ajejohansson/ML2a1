@@ -1,0 +1,178 @@
+Results with the following test/eval configuration:
+{'train': {'lang': 'English', 'dpi': ['200'], 'typeface': ['bold']}, 'eval': {'lang': 'English', 'dpi': ['300', '400'], 'typeface': ['normal']}}
+12 epochs
+model params:
+ThaiOCRModel(
+  (conv2d): Conv2d(1, 1, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+  (flatten): Flatten(start_dim=1, end_dim=-1)
+  (linear1): Linear(in_features=3456, out_features=300, bias=True)
+  (tanh): Tanh()
+  (linear2): Linear(in_features=300, out_features=52, bias=True)
+  (log_softmax): LogSoftmax(dim=1)
+)
+
+accuracy is 0.7159808276829553
+
+precision for label 'D' is 0.9233333333333333
+precision for label 'F' is 1.0
+precision for label 'K' is 0.9929577464788732
+precision for label 'v' is 0.9776785714285714
+precision for label 'L' is 0.16275586620069896
+precision for label 'I' is 0.38980263157894735
+precision for label 'S' is 0.5930599369085173
+precision for label 'p' is 0.5420353982300885
+precision for label 'T' is 0.9264214046822743
+precision for label 'P' is 0.7303370786516854
+precision for label 'e' is 1.0
+precision for label 'y' is 0.8214285714285714
+precision for label 'r' is 0.9904458598726115
+precision for label 'g' is 0.9252336448598131
+precision for label 'U' is 0.5174825174825175
+precision for label 'i' is 0.4558139534883721
+precision for label 'J' is 0.6346153846153846
+precision for label 'd' is 0.9242424242424242
+precision for label 'u' is 0.8885714285714286
+precision for label 'V' is 0.8497409326424871
+precision for label 'E' is 0.8376068376068376
+precision for label 'N' is 0.9078947368421053
+precision for label 'w' is 0.5948103792415169
+precision for label 'R' is 0.7875
+precision for label 'n' is 0.9066265060240963
+precision for label 'M' is 0.974025974025974
+precision for label 'm' is 0.9966329966329966
+precision for label '.' is 0.9633699633699634
+precision for label 'Y' is 0.7911392405063291
+precision for label 't' is 0.6054216867469879
+precision for label 'X' is 0.5559772296015181
+precision for label 'h' is 1.0
+precision for label 'x' is 0.6280487804878049
+precision for label 'a' is 0.9724137931034482
+precision for label 'k' is 0.99609375
+precision for label 'G' is 0.5306859205776173
+precision for label 'c' is 0.766798418972332
+precision for label 'b' is 0.9939759036144579
+precision for label 'l' is 0.32142857142857145
+precision for label 'Z' is 0.9446254071661238
+precision for label 'C' is 0.8354430379746836
+precision for label 'q' is 0.993006993006993
+precision for label 'f' is 0.8307291666666666
+precision for label 's' is 0.9916666666666667
+precision for label 'z' is 0.864
+precision for label 'B' is 0.9568345323741008
+precision for label 'j' is 0.7979094076655052
+precision for label 'H' is 1.0
+precision for label 'O' is 0.6764705882352942
+precision for label 'W' is 0.5387596899224806
+precision for label 'Q' is 1.0
+precision for label 'A' is 0.9965397923875432
+macro precision is 0.8038921664527925
+
+recall for label 'D' is 0.8171091445427728
+recall for label 'F' is 0.3856655290102389
+recall for label 'K' is 0.8367952522255193
+recall for label 'v' is 0.6
+recall for label 'L' is 1.0
+recall for label 'I' is 0.6950146627565983
+recall for label 'S' is 0.5714285714285714
+recall for label 'p' is 0.7515337423312883
+recall for label 'T' is 0.8075801749271136
+recall for label 'P' is 0.9393063583815029
+recall for label 'e' is 0.8087774294670846
+recall for label 'y' is 0.2804878048780488
+recall for label 'r' is 0.933933933933934
+recall for label 'g' is 0.8461538461538461
+recall for label 'U' is 0.22560975609756098
+recall for label 'i' is 0.3277591973244147
+recall for label 'J' is 0.8407643312101911
+recall for label 'd' is 0.9159159159159159
+recall for label 'u' is 0.9658385093167702
+recall for label 'V' is 0.47674418604651164
+recall for label 'E' is 0.6086956521739131
+recall for label 'N' is 0.971830985915493
+recall for label 'w' is 0.9003021148036254
+recall for label 'R' is 0.963302752293578
+recall for label 'n' is 0.9347826086956522
+recall for label 'M' is 0.9036144578313253
+recall for label 'm' is 0.8996960486322189
+recall for label '.' is 0.796969696969697
+recall for label 'Y' is 0.7552870090634441
+recall for label 't' is 0.5929203539823009
+recall for label 'X' is 0.9272151898734177
+recall for label 'h' is 0.19003115264797507
+recall for label 'x' is 0.30930930930930933
+recall for label 'a' is 0.9245901639344263
+recall for label 'k' is 0.8225806451612904
+recall for label 'G' is 0.9130434782608695
+recall for label 'c' is 0.6217948717948718
+recall for label 'b' is 0.48104956268221577
+recall for label 'l' is 0.07964601769911504
+recall for label 'Z' is 0.8761329305135952
+recall for label 'C' is 0.1907514450867052
+recall for label 'q' is 0.8328445747800587
+recall for label 'f' is 0.9725609756097561
+recall for label 's' is 0.7041420118343196
+recall for label 'z' is 0.972972972972973
+recall for label 'B' is 0.8012048192771084
+recall for label 'j' is 0.7178683385579937
+recall for label 'H' is 0.5878787878787879
+recall for label 'O' is 0.5193548387096775
+recall for label 'W' is 0.8323353293413174
+recall for label 'Q' is 0.6645569620253164
+recall for label 'A' is 0.9142857142857143
+macro recall is 0.7155763484335758
+
+f-score for label 'D' is 0.86697965571205
+f-score for label 'F' is 0.5566502463054187
+f-score for label 'K' is 0.9082125603864735
+f-score for label 'v' is 0.7436332767402377
+f-score for label 'L' is 0.27994847574066123
+f-score for label 'I' is 0.4994731296101159
+f-score for label 'S' is 0.5820433436532507
+f-score for label 'p' is 0.6298200514138818
+f-score for label 'T' is 0.8629283489096573
+f-score for label 'P' is 0.8217446270543616
+f-score for label 'e' is 0.8942807625649913
+f-score for label 'y' is 0.41818181818181815
+f-score for label 'r' is 0.9613601236476044
+f-score for label 'g' is 0.8839285714285714
+f-score for label 'U' is 0.31422505307855625
+f-score for label 'i' is 0.38132295719844356
+f-score for label 'J' is 0.7232876712328767
+f-score for label 'd' is 0.9200603318250377
+f-score for label 'u' is 0.9255952380952381
+f-score for label 'V' is 0.6108007448789572
+f-score for label 'E' is 0.7050359712230215
+f-score for label 'N' is 0.9387755102040817
+f-score for label 'w' is 0.7163461538461539
+f-score for label 'R' is 0.8665749656121046
+f-score for label 'n' is 0.9204892966360856
+f-score for label 'M' is 0.9375
+f-score for label 'm' is 0.9456869009584664
+f-score for label '.' is 0.8723051409618574
+f-score for label 'Y' is 0.7727975270479135
+f-score for label 't' is 0.5991058122205664
+f-score for label 'X' is 0.6951364175563464
+f-score for label 'h' is 0.3193717277486911
+f-score for label 'x' is 0.41448692152917505
+f-score for label 'a' is 0.9478991596638655
+f-score for label 'k' is 0.901060070671378
+f-score for label 'G' is 0.6712328767123288
+f-score for label 'c' is 0.6867256637168142
+f-score for label 'b' is 0.6483300589390962
+f-score for label 'l' is 0.1276595744680851
+f-score for label 'Z' is 0.9090909090909091
+f-score for label 'C' is 0.31058823529411766
+f-score for label 'q' is 0.9059011164274322
+f-score for label 'f' is 0.8960674157303371
+f-score for label 's' is 0.8235294117647058
+f-score for label 'z' is 0.9152542372881356
+f-score for label 'B' is 0.8721311475409836
+f-score for label 'j' is 0.7557755775577558
+f-score for label 'H' is 0.7404580152671756
+f-score for label 'O' is 0.5875912408759124
+f-score for label 'W' is 0.6541176470588236
+f-score for label 'Q' is 0.7984790874524715
+f-score for label 'A' is 0.9536423841059603
+macro f-score is 0.7229542915928644
+
+------------------------------------------------

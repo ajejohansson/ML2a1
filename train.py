@@ -1,18 +1,17 @@
-import os
-import sys
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader #, random_split
+from torch.utils.data import DataLoader
 from torch.optim import Adam
-from PIL import Image
-import pandas as pd
+#from PIL import Image
+#import pandas as pd
 from sklearn.model_selection import train_test_split
-from torchvision.io import read_image, decode_image#, transforms
+#from torchvision.io import read_image, decode_image#, transforms
 import torchvision.transforms as transforms
-from itertools import chain
+#from itertools import chain
 import tqdm
 import pickle
 from preprocess import ThaiOCRData
+torch.manual_seed(1)
 
 if torch.cuda.is_available():
     device = torch.device('cuda:3')
@@ -37,7 +36,7 @@ class ThaiOCRModel(nn.Module):
         out = self.linear2(out)
         return self.log_softmax(out)
 
-def train(filename='trained_model.pt', epochs=4, device='cpu'):
+def train(filename='trained_model.pt', epochs=8, device='cpu'):
     with open('train_dataset.pkl', 'rb') as f:
         loaded_train = pickle.load(f)
     classes = loaded_train.classes
@@ -46,44 +45,25 @@ def train(filename='trained_model.pt', epochs=4, device='cpu'):
     optimizer = Adam(model.parameters(), lr=0.01)
     criterion = nn.NLLLoss().to(device)
     
-
     for epoch in range(epochs):
         print("Training epoch", epoch)
+        total_loss = 0
         
         for batch_id, batch in enumerate(tqdm.tqdm(loader)):
-            #print(batch_id, batch)
-            #print(batch)
-            #for i in batch:
-            #    print(i)
-            #    print()
-
-            #img_name, label, dpi, typeface, img_tensor = batch
             img_tensor, label = batch
-            #print(label)
-            #print(print(img_tensor[0].dtype))
-            #X, y = batch
             label = label.to(device)
-            #print('passed')
             optimizer.zero_grad()
             out = model(img_tensor)
-            #print(label)
             loss = criterion(out, label)
             loss.backward()
             optimizer.step()
-            #print('passed batch')
-        
-
-    #print(loader)
-    print(model)
+            total_loss += loss.item()
+            
+        print('Average loss for epoch:', round(total_loss/len(loader), 3))
+        print()
 
     torch.save(model.state_dict(), filename)
 
-    
-#source ML-env/bin/activate
 if __name__ == "__main__":
-    #trainset, testset, valset, classes = generate_split(training_dir)
 
-    #classes = loaded_train.classes
-    #model = train(classes, device=device)
-    #print(classes)
     train(device=device)
