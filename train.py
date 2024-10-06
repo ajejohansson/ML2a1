@@ -2,12 +2,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from torch.optim import Adam
-#from PIL import Image
-#import pandas as pd
 from sklearn.model_selection import train_test_split
-#from torchvision.io import read_image, decode_image#, transforms
 import torchvision.transforms as transforms
-#from itertools import chain
 import tqdm
 import pickle
 from preprocess import ThaiOCRData
@@ -36,7 +32,7 @@ class ThaiOCRModel(nn.Module):
         out = self.linear2(out)
         return self.log_softmax(out)
 
-def train(filename='trained_model.pt', epochs=4, device='cpu'):
+def train(filename='trained_model.pt', epochs=8, device='cpu'):
     with open('train_dataset.pkl', 'rb') as f:
         loaded_train = pickle.load(f)
     classes = loaded_train.classes
